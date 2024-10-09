@@ -1,0 +1,39 @@
+﻿ @model ValueTuple<string, string>
+<h1 class="text-center text-white">Zrušení účtu</h1>
+@* <a asp-action="Index" class="btn btn-secondary">Back</a> *@
+<div asp-validation-summary="All" class="custom-validation-summary"></div>
+<div class="d-flex justify-content-center text-white">
+	<form method="post" asp-action="Delete" style="width:20rem">
+		<div class="form-group ">
+			<label for="userAccountNumber">Zadejte číslo účtu, kde se má odeslat kredit @Model.Item2 Kč</label>
+			<input type="text" id="userAccountNumber" name="userAccountNumber" class="form-control" />
+		</div>
+		<div class="form-group visually-hidden">			 
+				<input name="id" class="form-control" id="id" value="@Model.Item1" />
+			</div>
+		<button type="submit" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#messageModal">Odeslat</button>
+	</form>
+
+</div>
+<!-- Modal processing-->
+<div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="ModalLabel">Zpracovávám požadavek...</h1>
+				@* <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> *@
+			</div>
+			<div class="modal-body">
+
+				<div class="text-center">
+					<div class="spinner-border text-warning" role="status">
+						<span class="visually-hidden">Loading...</span>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<span>Odesílám email s potvrzením ...</span>
+			</div>
+		</div>
+	</div>
+</div>

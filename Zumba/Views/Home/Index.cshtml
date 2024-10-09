@@ -1,0 +1,13 @@
+﻿@model string
+@if (User?.Identity?.IsAuthenticated??false)
+{
+	<div class="row justify-content-center align-items-center">
+		<div class="  text-black shadow  p-3 mt-5 bg-warning bg-gradient  rounded-3" style=" max-width:40rem">
+			<h1 class=" text-center">Vítejte na stránkách ZUMBY</h1>
+			<div class="d-flex justify-content-center align-items-center">
+
+				<p style="white-space: pre-line;width:30rem;text-align: justify;" class=" m-5">@Model</p>
+			</div>
+		</div>
+	</div>
+}

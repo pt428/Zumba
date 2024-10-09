@@ -1,0 +1,173 @@
+﻿@using Zumba.DTO
+
+@model IEnumerable<SettingsDTO>
+<h1 class="text-white text-center">Nastavení</h1>
+<div asp-validation-summary="All" class="custom-validation-summary"></div>
+<form id="myForm" asp-action="Change" method="post">
+
+	@for (int i = 0; i < Model.Count(); i++)
+	{
+		if (i == 0)
+		{
+			<table class="table table-success table-striped">
+				<tr>
+					<td>
+						<div class="input-group mb-3">
+							<span class="input-group-text" id="news">Aktuality - Home</span>
+							<textarea id="newsTextarea" rows="10" type="text" name="[@i].News" class="form-control" placeholder="Zadej text, který se zobrazí na hlavní stránce" aria-describedby="news">@Model.ElementAt(i).News</textarea>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="input-group mb-3">
+							<span class="input-group-text" id="info">Info - Rezervace</span>
+							<textarea id="newsTextarea" rows="1" type="text" name="[@i].Info" class="form-control" placeholder="Zadej text, který se zobrazí na stránce rezervace" aria-describedby="info">@Model.ElementAt(i).Info</textarea>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="input-group mb-3">
+							<span class="input-group-text" id="owner">Vlastník</span>
+							<input type="text" name="[@i].OwnerOfBankAccount" value="@Model.ElementAt(i).OwnerOfBankAccount" class="form-control" placeholder="Zadej jméno vlastníka účtu" aria-describedby="owner" required>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="input-group mb-3">
+							<span class="input-group-text" id="bank">Banka</span>
+							<input type="text" name="[@i].BankAccount" value="@Model.ElementAt(i).BankAccount" class="form-control" placeholder="Zadejte číslo bank účtu" aria-describedby="bank" required>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="input-group mb-3">
+							<span class="input-group-text" id="email">Email</span>
+							<input type="text" name="[@i].Email" value="@Model.ElementAt(i).Email" class="form-control" placeholder="Zadej email vlastníka" aria-describedby="email" required>
+						</div>
+					</td>
+				</tr>
+			</table>
+			<div class="d-grid gap-2">
+				<button type="submit" class="btn  btn-success" >Uložit</button>
+			</div>
+			<hr class="border border-success border-3 opacity-75">
+		}
+		else
+		{
+			<input type="hidden" name="[@i].OwnerOfBankAccount" value="x">
+			<input type="hidden" name="[@i].BankAccount" value="x">
+			<input type="hidden" name="[@i].Email" value="x">
+
+		}
+		<input type="hidden" name="[@i].Id" value="@Model.ElementAt(i).Id" />
+		<input type="hidden" name="[@i].DayOfWeek" value="@Model.ElementAt(i).DayOfWeek" readonly />
+
+		<div class="row p-3 m-1 " style="background:#d1e7dd">
+			<div class="col-xl">
+				<input type="checkbox" id="btn-check-@i" name="[@i].IsActive" value="true" class="btn-check" @(Model.ElementAt(i).IsActive ? "checked" : "") />
+				<label class="btn btn-outline-success h-100 w-100 d-flex justify-content-center align-items-center" for="btn-check-@i">@Model.ElementAt(i).DayOfWeek</label>
+			</div>
+			<div class="col-xl col-md-4 col-sm-4">
+				<h6>MÍSTO</h6>
+				<input id="input-place-@i" type="text" name="[@i].Place" value="@Model.ElementAt(i).Place" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" @(Model.ElementAt(i).IsActive ? "required" : "") />
+			</div>
+			<div class="col-xl col-md-4 col-sm-4">
+				<h6>ČAS OD </h6>
+				<input id="input-timeFrom-@i" type="time" name="[@i].TimeFrom" value="@Model.ElementAt(i).TimeFrom" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" @(Model.ElementAt(i).IsActive ? "required" : "") />
+			</div>
+			<div class="col-xl col-md-4 col-sm-4">
+				<h6>ČAS DO</h6>
+				<input id="input-timeTo-@i" type="time" name="[@i].TimeTo" value="@Model.ElementAt(i).TimeTo" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" @(Model.ElementAt(i).IsActive ? "required" : "") />
+			</div>
+			<div class="col-xl col-md-4 col-sm-4">
+				<h6>CENA HOTOVĚ</h6>
+				<input id="input-amountCash-@i" type="number" name="[@i].AmountCash" value="@Model.ElementAt(i).AmountCash" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" @(Model.ElementAt(i).IsActive ? "required" : "") />
+			</div>
+			<div class="col-xl col-md-4 col-sm-4">
+				<h6>CENA KREDIT</h6>
+				<input id="input-amountCredit-@i" type="number" name="[@i].AmountCredit" value="@Model.ElementAt(i).AmountCredit" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" @(Model.ElementAt(i).IsActive ? "required" : "") />
+			</div>
+			<div class="col-xl col-md-4 col-sm-4">
+				<h6>POČET MÍST</h6>
+				<input id="input-numberOfPlaces-@i" type="number" min="0" name="[@i].MaxNumberOfPlaces" value="@Model.ElementAt(i).MaxNumberOfPlaces" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" @(Model.ElementAt(i).IsActive ? "required" : "") />
+			</div>
+		</div>
+		<hr class="border border-success border-3 opacity-75">
+		<script>
+			document.addEventListener('DOMContentLoaded', () => {
+				const checkbox = document.getElementById('btn-check-@i');
+				const inputTimeFrom = document.getElementById("input-timeFrom-@i");
+				const inputTimeTo = document.getElementById("input-timeTo-@i");
+				const inputPlace = document.getElementById("input-place-@i");
+				const inputNumberOfPlaces = document.getElementById("input-numberOfPlaces-@i");
+				const inputAmountCash = document.getElementById("input-amountCash-@i");
+				const inputAmountCredit = document.getElementById("input-amountCredit-@i");
+
+				checkbox.addEventListener('change', () => {
+					if (checkbox.checked) {
+						inputTimeFrom.setAttribute('required', 'required');
+						inputTimeTo.setAttribute('required', 'required');
+						inputPlace.setAttribute('required', 'required');
+						inputNumberOfPlaces.setAttribute('required', 'required');
+						inputAmountCash.setAttribute('required', 'required');
+						inputAmountCredit.setAttribute('required', 'required');
+
+					} else {
+						inputTimeFrom.removeAttribute('required');
+						inputTimeTo.removeAttribute('required');
+						inputPlace.removeAttribute('required');
+						inputNumberOfPlaces.removeAttribute('required');
+						inputAmountCash.removeAttribute('required');
+						inputAmountCredit.removeAttribute('required');
+					}
+				});
+
+			});
+			// Funkce pro validaci formuláře a zobrazení spinneru
+			document.getElementById('myForm').addEventListener('submit', function (event) {
+				var form = event.target;
+				if (form.checkValidity()) {
+					$('#messageModal').modal('show');
+				}
+			});
+
+
+		</script>
+		 
+	}
+
+	<div class="d-grid gap-2">
+		<button type="submit" class="btn  btn-success"  >Uložit</button>
+	</div>
+
+ 
+</form>
+
+<!-- Modal processing-->
+<div class="modal fade text-black" id="messageModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="ModalLabel">Zpracovávám požadavek ...</h1>
+				@* <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> *@
+			</div>
+			<div class="modal-body">
+
+				<div class="text-center">
+					<div class="spinner-border text-warning" role="status">
+						<span class="visually-hidden">Loading...</span>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<span>Ukládám ...</span>
+			</div>
+		</div>
+	</div>
+</div>
+
+

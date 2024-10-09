@@ -1,0 +1,265 @@
+﻿@using System.Globalization
+@using Zumba.DTO
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<AppUser> UserManager
+@inject IHttpContextAccessor HttpContextAccessor
+@model IEnumerable<CalendarDayDataDTO>
+@{
+	ViewData["Title"]="REZERVACE";
+	var info = ViewBag.Info;
+}
+@{
+	ViewBag.Title="REZERVACE";
+	// var weekDates = ViewBag.WeekDates as List<(string date, int numberOfReservations)>;
+	// var settings = ViewBag.Settings as IEnumerable<SettingsDTO>;
+	var message = ViewBag.Message as string;
+}
+<div class="container">
+	<h1 class="text-white text-center">REZERVACE</h1>
+	@if (info!="")
+	{
+		<h5 class="text-danger text-center  bg-warning py-2">@info</h5>
+	}
+	<!-- Zobrazení úspěšné nebo chybové zprávy -->
+	@if (TempData["SuccessMessage"]!=null)
+	{
+		<div class="alert alert-success">
+			@TempData["SuccessMessage"]
+		</div>
+	}
+	@if (TempData["ErrorMessage"]!=null)
+	{
+		<div class="alert alert-danger">
+			@TempData["ErrorMessage"]
+		</div>
+	}
+	<div asp-validation-summary="All" class="custom-validation-summary"></div>
+	<div class="d-flex justify-content-center">
+		<a class="btn btn-secondary m-1 flex-grow-1" asp-action="MoveBackwardWeek" asp-route-date="@DateTime.Parse(Model.ElementAt(0).DateOfDay)">O týden dozadu</a>
+		<a class="btn btn-secondary m-1 flex-grow-1 " asp-action="Index">Tento týden</a>
+		<a class="btn btn-secondary m-1 flex-grow-1  " asp-action="MoveForwardWeek" asp-route-date="@DateTime.Parse(Model.ElementAt(6).DateOfDay)">O týden dopředu</a>
+	</div>
+	@if (User?.Identity?.IsAuthenticated??false)
+	{
+		var httpContext = HttpContextAccessor.HttpContext;
+		if (httpContext==null)
+		{
+			// Zpracujte případ, kdy je HttpContext null
+			throw new InvalidOperationException("HttpContext is null");
+		}
+		var user = await UserManager.GetUserAsync(httpContext.User);
+
+		for (int i = 0; i<Model.Count(); i++)
+		{
+			TimeOnly time = Model.ElementAt(i).TimeFrom=="" ? TimeOnly.Parse("00:00:00") : TimeOnly.Parse(Model.ElementAt(i).TimeFrom);
+			int hoursBefore = (int)(DateTime.Parse($"{Model.ElementAt(i).DateOfDay} {time} ")-DateTime.Now).TotalHours;
+
+			if (Model.ElementAt(i).IsDayActive)
+			{
+				<hr class="border border-primary border-3 opacity-75">
+				<div class="row">
+ 
+					<div class=" col-xxl-9   col-xl-12  p-0">
+						<form method="get" asp-action="Index" asp-controller="Reservations">
+							<input type="hidden" name="date" value="@Model.ElementAt(i).DateOfDay" />
+							<button type="submit" class="btn btn-warning w-100 " style="min-height:6rem">
+								<div class="row h-100">
+									<div class="  col-xl-3  d-flex justify-content-center align-items-center">
+										<h4>@Model.ElementAt(i).NameOfDay @Model.ElementAt(i).DateOfDay</h4>
+
+									</div>
+									<div class="  col-xl-3 d-flex justify-content-center align-items-center">
+										<h5>@Model.ElementAt(i).Place @Model.ElementAt(i).TimeFrom-@Model.ElementAt(i).TimeTo</h5>
+
+									</div>
+									<div class="  col-xl-3  d-flex justify-content-center align-items-center ">
+										<h5>Hotově: @Model.ElementAt(i).AmountCash Kč</h5>
+									</div>
+									<div class="  col-xl-3 d-flex justify-content-center align-items-center ">
+										<h5>Z kreditu: @Model.ElementAt(i).AmountCredit Kč</h5>
+									</div>
+								</div>
+							</button>
+						</form>
+					</div>
+					<div class=" col-xxl-3   col-xl-12 p-0">
+				
+						@if (Model.ElementAt(i).LessonIsOff)
+						{
+							<button type="button" class="btn btn-danger w-100" style="min-height:6rem"><h4 class="p-0 m-0">Lekce je zrušena</h4><h5>...</h5></button>
+
+						}else if (hoursBefore>=0)
+						{
+							@if (@Model.ElementAt(i).NumberOfReservationOfDay==0)
+							{
+								<button class="btn btn-danger w-100 " type="button" style="min-height:6rem"><h4 class="p-0 m-0">OBSAZENO</h4><h5>Volných  @Model.ElementAt(i).NumberOfReservationOfDay z @Model.ElementAt(i).MaxNumberOfPlacesOfDay</button>
+							}
+							else
+							{
+								<button type="button" class="btn btn-success w-100" style="min-height:6rem" data-bs-toggle="modal" data-bs-target="#Modal-@i">
+									<h4 class="p-0 m-0">KLIKNUTÍM REZERVUJTE</h4>
+									<h5>
+										Volných  @Model.ElementAt(i).NumberOfReservationOfDay z @Model.ElementAt(i).MaxNumberOfPlacesOfDay
+										@{
+											int ii = 0;
+										}
+										@foreach (var userOfRes in Model.ElementAt(i).UsersOfReservation)
+										{
+
+											if (user.Id==userOfRes.Id)
+											{
+												ii++;
+											}
+										}
+
+										@if (ii>0)
+										{
+											<i class="bi bi-@ii-circle-fill"></i>
+										}
+
+									</h5>
+								</button>
+							}
+						}					
+						else
+						{
+							<button type="button" class="btn btn-danger w-100" style="min-height:6rem"><h4 class="p-0 m-0">UKONČENO</h4><h5>Volných  @Model.ElementAt(i).NumberOfReservationOfDay z @Model.ElementAt(i).MaxNumberOfPlacesOfDay</h5></button>
+						}
+						@* 	NECVICI SE POUZE PRO ADMIN *@
+						@if (User.Identity is not null&&User.Identity.IsAuthenticated&&(User.IsInRole("Admin"))&&  hoursBefore>=0)
+						{
+							@if (Model.ElementAt(i).LessonIsOff)
+							{
+								<button class="btn allowButton  w-100 " data-bs-toggle="modal" data-bs-target="#Modal-cancel-lesson-@i">
+									<div class=" d-flex align-items-center justify-content-center "><i class="  bi bi-check-circle me-2 fs-1"></i><span class="fs-5">Obnovit lekci</span></div>
+								</button>
+							}
+							else
+							{
+								<button class="btn cancelButton w-100 " data-bs-toggle="modal" data-bs-target="#Modal-cancel-lesson-@i">
+									<div class="d-flex align-items-center  justify-content-center fs-3"><i class="   bi bi-x-circle me-2  fs-1"></i><span class="fs-5">Zrušit lekci</span></div>
+								</button>
+							}
+
+						 
+						}
+						@* 	/NECVICI SE POUZE PRO ADMIN *@
+					</div>
+				</div>
+				<hr class="border border-primary border-3 opacity-75">
+			}
+
+			<!-- Modal -->
+			<div class="modal fade" id="Modal-@i" tabindex="-1" aria-labelledby="ModalLabel-@i" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h1 class="modal-title fs-5" id="ModalLabel-@i">Rezervace @Model.ElementAt(i).DateOfDay</h1>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							Chcete provést rezervaci?
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">NE</button>
+							<form method="post" asp-action="AddReservation">
+								<div class="d-grid gap-2">
+									<input type="hidden" asp-for="@Model.ElementAt(i).NameOfDay" />
+									<input type="hidden" asp-for="@Model.ElementAt(i).DateOfDay" />
+									<input type="hidden" asp-for="@Model.ElementAt(i).FirstDateOfWeek" />
+									<input type="hidden" asp-for="@Model.ElementAt(i).Place" />
+									<input type="hidden" asp-for="@Model.ElementAt(i).MaxNumberOfPlacesOfDay" />
+									<input type="hidden" asp-for="@Model.ElementAt(i).AmountCash" />
+									<input type="hidden" asp-for="@Model.ElementAt(i).AmountCredit" />
+									<input type="hidden" asp-for="@Model.ElementAt(i).TimeTo" />
+									<input type="hidden" asp-for="@Model.ElementAt(i).TimeFrom" />
+									<input type="hidden" asp-for="@Model.ElementAt(0).OwnerOfBankAccount" />
+									<input type="hidden" asp-for="@Model.ElementAt(0).OwnerBankAccount" />
+									<input type="hidden" asp-for="@Model.ElementAt(0).OwnerEmail" />
+
+
+									<button id="reservationSubmitBtn" data-bs-toggle="modal" data-bs-target="#messageModal" type="submit" class="btn btn-success"> ANO </button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Modal CANCELED-->
+			<div class="modal fade" id='Modal-cancel-lesson-@i' tabindex="-1" aria-labelledby="Modal-Label-@i" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h1 class="modal-title fs-5" id="Modal-Label-@i">@(@Model.ElementAt(i).LessonIsOff?"Obnovení":"Zrušení") lekce @Model.ElementAt(i).DateOfDay</h1>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							Opravdu chcete změnit status?
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">NE</button>
+							<form>
+								<input asp-for="@Model.ElementAt(i).DateOfDay" hidden />
+								@if (Model.ElementAt(i).LessonIsOff)
+								{
+									<button class="btn btn-success w-100 " asp-action="ChangeLessonStatusToOn" asp-controller="Calendar" type="submit"><div class="d-flex align-items-center justify-content-center"><i class="bi bi-check-circle me-2 fs-4"></i>Obnovit lekci</div></button>
+								}
+								else
+								{
+									<button class="btn btn-danger w-100 " asp-action="ChangeLessonStatusToOff" asp-controller="Calendar" type="submit">
+										<div class="d-flex align-items-center  justify-content-center"><i class="bi bi-x-circle me-2  fs-4"></i>Zrušit lekci</div>
+									</button>
+								}
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		}
+	}
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="ModalLabel">Probíhá rezervace ...</h1>
+				@* <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> *@
+			</div>
+			<div class="modal-body">
+				<div class="text-center">
+					<div class="spinner-border text-warning" role="status">
+						<span class="visually-hidden">Loading...</span>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<span>Odesílám email s potvrzením ...</span>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="messageModalCal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="ModalLabel">Načítám kalendář ...</h1>
+				@* <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> *@
+			</div>
+			<div class="modal-body">
+				<div class="text-center">
+					<div class="spinner-border text-warning" role="status">
+						<span class="visually-hidden">Loading...</span>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<span>Vytvářím seznam rezervací ...</span>
+			</div>
+		</div>
+	</div>
+</div>

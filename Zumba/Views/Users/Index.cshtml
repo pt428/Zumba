@@ -1,0 +1,153 @@
+﻿@model IEnumerable<AppUser>
+@{
+	ViewData["Title"] = "Uživatel";
+}
+
+<h1 class="text-white text-center">Uživatel</h1>
+<div asp-validation-summary="All" class="custom-validation-summary"></div>
+@*tlačítko pro vytvoření nového uživatele*@
+@* <a asp-action="Create" class="btn btn-secondary">Create a User</a> *@
+@*tabulka bude mít vyznačené okraje*@
+<!-- Zobrazení úspěšné nebo chybové zprávy -->
+@if (TempData["SuccessMessage"] != null)
+{
+	<div class="alert alert-success">
+		@TempData["SuccessMessage"]
+	</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+	<div class="alert alert-danger">
+		@TempData["ErrorMessage"]
+	</div>
+}
+<div class="row justify-content-center">
+	@foreach (AppUser user in Model)
+	{
+		string adminClass = "card bg-secondary border-black border border-5 m-1 p-1";
+		if (User?.Identity?.Name == user.Email)
+		{
+			adminClass="card bg-black m-1 p-1 border-white";
+		}
+		<div class="@adminClass" style="width: 19rem;">
+			@if (User?.Identity is not null && User.Identity.IsAuthenticated && (User.IsInRole("Admin")))
+			{
+				<div class="card-header">
+					<form asp-action="Actived" asp-route-id="@user.Id" method="post">
+						<div class="d-grid gap-2">
+							@if (user.IsActive)
+							{
+								<button type="submit" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#messageModal">
+									@user.State
+								</button>
+							}
+							else
+							{
+								<button type="submit" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#messageModal">
+									@user.State
+								</button>
+							}
+						</div>
+					</form>
+				</div>
+			}
+			<ul class="list-group list-group-flush">
+				<li class="list-group-item list-group-item-secondary">@user.FirstName @user.LastName</li>
+				<li class="list-group-item">@user.Email</li>
+				<li class="list-group-item list-group-item-secondary">Tel.: @user.PhoneNumber</li>
+				<li class="list-group-item">Kredit: @user.Credit Kč</li>
+				@if (User?.Identity is not null && User.Identity.IsAuthenticated && (User.IsInRole("Admin")))
+				{
+					<li class="list-group-item list-group-item-secondary">
+						<form id="myForm" asp-action="AddCredit" asp-route-id="@user.Id" method="post">
+							<div class="input-group  ">
+								<input type="number" name="credit" class="form-control" required/>
+								<div class="input-group-append">
+									<button type="submit" class="btn btn-sm btn-primary p-2"  >Vložit částku</button>
+								</div>
+							</div>
+						</form>
+					</li>
+				}
+				<li class="list-group-item">
+					<div class="d-grid gap-2">
+						<a class="btn btn-sm btn-info" asp-action="Edit" asp-route-id="@user.Id">Změna hesla</a>
+					</div>
+				</li>
+				<li class="list-group-item">
+					<div class="d-grid gap-2 ">
+						<button type="submit" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target='#@user.Email.Replace("@", "").Replace(".", "")'>Smazat účet</button>
+					</div>
+				</li>
+			</ul>
+		</div>
+
+		<!-- Modal Payment-->
+		<div class="modal fade" id='@user.Email.Replace("@","").Replace(".","")' tabindex="-1" aria-labelledby="1-@user.Email" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h1 class="modal-title fs-5" id="1-@user.Email">Smazání účtu @user.Email</h1>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						Opravdu chcete smazat účet?
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">NE</button>
+						@if (int.Parse(user.Credit) > 0)
+						{
+							<form asp-action="AddAccountNumber" asp-route-id="@user.Id" asp-route-credit="@user.Credit" method="post">
+								<div class="d-grid gap-2 ">
+									<button type="submit" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#messageModal">ANO</button>
+								</div>
+							</form>
+						}
+						else
+						{
+							<form asp-action="Delete" asp-route-id="@user.Id" asp-route-userAccountNumber="" method="post">
+								<div class="d-grid gap-2 ">
+									<button type="submit" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#messageModal">ANO</button>
+								</div>
+							</form>
+						}
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+
+</div>
+<!-- Modal processing-->
+<div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="ModalLabel">Zpracovávám požadavek...</h1>
+				@* <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> *@
+			</div>
+			<div class="modal-body">
+
+				<div class="text-center">
+					<div class="spinner-border text-warning" role="status">
+						<span class="visually-hidden">Loading...</span>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<span>Odesílám email s potvrzením ...</span>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+		@* // Funkce pro validaci formuláře a zobrazení spinneru *@
+		document.getElementById('myForm').addEventListener('submit', function (event) {
+			var form = event.target;
+			if (form.checkValidity()) {
+				$('#messageModal').modal('show');
+			}
+		});
+
+
+</script>

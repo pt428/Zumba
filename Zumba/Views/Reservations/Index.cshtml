@@ -1,0 +1,268 @@
+﻿@using Zumba.DTO
+ @model IEnumerable<ReservationDTO>
+@{
+
+	var date = ViewBag.Date as string;
+	int i = 0;
+
+}
+
+<div class="concontainer  text-white">
+	<h1 class="  text-center">Seznam rezervací @date</h1>
+	<div id="main-row" class="row justify-content-center">
+		@if (TempData["SuccessMessage"] != null)
+		{
+			<div class="alert alert-success">
+				@TempData["SuccessMessage"]
+			</div>
+		}
+		@if (TempData["ErrorMessage"] != null)
+		{
+			<div class="alert alert-danger">
+				@TempData["ErrorMessage"]
+			</div>
+		}
+		@{
+			var request = Context.Request;
+
+		}
+
+		<div class="d-flex justify-content-center m-2">
+			<input type="date" id="searchDate" class="form-control w-25" />
+			@* @if (request.QueryString.ToString() == "?parameter=old")
+			{
+				<a class="text-white m-2" asp-route-parameter="new" asp-controller="Reservations" asp-action="Index">Řadit od nejnovější rezervace</a>
+			}
+			else
+			{
+				<a class="text-white m-2" asp-route-parameter="old" asp-controller="Reservations" asp-action="Index">Řadit od nejstarší rezervace</a>
+			} *@
+		</div>
+
+
+
+		<div asp-validation-summary="All" class="custom-validation-summary"></div>
+		@foreach (var item in Model)
+		{
+			i++;
+			TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
+			DateTime now = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZone);
+			TimeOnly time = item.TimeFrom == "" ? TimeOnly.Parse("00:00:00") : TimeOnly.Parse(item.TimeFrom);
+			DateTime dateOfDay = DateTime.Parse($"{item.Date} {time}");
+
+			  double hoursBefore = Math.Round(((double)(dateOfDay - now).TotalHours) - 24, 2);@* REZERVACI NELZE ZRUSIT 24h. PŘED CVIČENÍM *@  
+			<div class="row p-0 m-1 visually-visible" id="single-Row-@i">
+				<div class="col-lg-1 col-md-12 p-0 d-flex justify-content-start">
+					<!-- Example single danger button -->
+					<div class="btn-group">
+						@if (item.Payment == "ZAPLACENO")
+						{
+							<button type="button" class="btn btn-success dropdown-toggle  " data-bs-toggle="dropdown" aria-expanded="false">
+								Info
+							</button>
+						}
+						else
+						{
+							<button type="button" class="btn btn-danger dropdown-toggle  " data-bs-toggle="dropdown" aria-expanded="false">
+								Info
+							</button>
+						}
+						<ul class="dropdown-menu" style="width:25rem">
+							<li class="list-group-item list-group-item-secondary">Vytvořeno: @item.DateOfCreation</li>
+							<li class="list-group-item">Cena: @item.Price Kč</li>
+							@if (@item.Payment == "ZAPLACENO")
+							{
+								<li class="list-group-item list-group-item-success">@item.Payment </li>
+							}
+							else
+							{
+								<li class="list-group-item list-group-item-danger">@item.Payment </li>
+							}
+							@if (User.Identity is not null && User.Identity.IsAuthenticated && (User.IsInRole("Admin")))
+							{
+								<li class="list-group-item">Uživatel: @item?.User?.FirstName  @item?.User?.LastName</li>
+								<li class="list-group-item">Email: @item?.User?.Email </li>
+							}
+							@if (hoursBefore > 0)
+							{
+								<li class="list-group-item list-group-item-warning">Možnost zrušení vyprší za @hoursBefore h</li>
+							}
+							<li class="list-group-item">
+						</ul>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-4 d-flex align-items-center btn btn-secondary p-0 rowDay">
+					<h5 class="p-2 m-0">@item.Day <span id="single-row-date-@i">@item.Date</span></h5>
+				</div>
+				<div class="col-lg-2 col-md-3 d-flex align-items-center btn btn-secondary p-0 rowDay">
+					<h5 class="p-2 m-0">@item.TimeFrom - @item.TimeTo</h5>
+				</div>
+				<div class="col-lg-3 col-md-5 d-flex align-items-center btn  btn-secondary  p-0 rowDay">
+					<h5 class="p-2 m-0">@item?.User?.FirstName  @item?.User?.LastName</h5>
+				</div>
+
+
+				<div class="col-lg-2 col-md-7 bg-body p-0">
+					@if (@hoursBefore>=0||User.Identity.IsAuthenticated&&(User.IsInRole("Admin")))
+					{
+						<div class="d-grid gap-2">
+							<button type="submit" class="btn btn-danger" style="height:2.6rem" data-bs-toggle="modal" data-bs-target="#Modal-Cancel-@i">ZRUŠIT</button>
+						</div>
+					}
+					else
+					{
+						<div class="d-grid gap-2">
+							<button class="btn btn-secondary " style="height:2.6rem">NELZE ZRUŠIT</button>
+						</div>
+					}
+				</div>
+				@if (User.Identity is not null &&  User.Identity.IsAuthenticated && (User.IsInRole("Admin")))
+				{
+					<div class="col-lg-1 col-md-5 p-0">
+						@if (item.Payment != "ZAPLACENO")
+						{
+							<div class="d-grid gap-2">
+								<button type="submit" class="btn btn-success" style="height:2.6rem" data-bs-toggle="modal" data-bs-target="#Modal-Pay-@i">ZAPLATIT</button>
+							</div>
+						}
+						else
+						{
+							<div class="d-grid gap-2">
+								<button class="btn btn-warning" style="height:2.6rem">ZAPLACENO</button>
+							</div>
+						}
+					</div>
+				}
+
+
+			</div>
+
+
+			<!-- Modal Cancel-->
+			<div class="modal fade text-black" id="Modal-Cancel-@i" tabindex="-1" aria-labelledby="ModalLabel-@i" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h1 class="modal-title fs-5" id="ModalLabel-@i">Zrušení rezervace</h1>
+							@* <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> *@
+						</div>
+						<div class="modal-body">
+							Chcete zrušit rezervaci?
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">NE</button>
+							<form method="post" asp-action="CancelReservation">
+								<input type="hidden" name="id" value="@item.Id" />
+								<input type="hidden" name="date" value="@date" />
+								<button type="submit" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#messageModal">ANO</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Modal Payment-->
+			<div class="modal fade text-black" id="Modal-Pay-@i" tabindex="-1" aria-labelledby="ModalLabel-@i" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h1 class="modal-title fs-5" id="ModalLabel-@i">Zaplacení na místě</h1>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							Změnit status na ZAPLACENO?
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">NE</button>
+							<form method="post" asp-action="PayReservation">
+								<input type="hidden" name="id" value="@item.Id" />
+								<input type="hidden" name="date" value="@date" />
+								<button type="submit" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#messageModal">ANO</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		}
+	</div>
+</div>
+<!-- Modal processing-->
+<div class="modal fade text-black" id="messageModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="ModalLabel">Zpracovávám požadavek ...</h1>
+				@* <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> *@
+			</div>
+			<div class="modal-body">
+
+				<div class="text-center">
+					<div class="spinner-border text-warning" role="status">
+						<span class="visually-hidden">Loading...</span>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<span>Odesílám email s potvrzením ...</span>
+			</div>
+		</div>
+	</div>
+</div>
+@section Scripts{
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			const searchDateInput=document.getElementById('searchDate');
+
+			searchDateInput.addEventListener('change', function () {
+				const mainRow=document.getElementById('main-row');
+				const allRows=mainRow.getElementsByClassName('visually-visible');
+
+				// Pokud není vybráno žádné datum, zobraz všechny řádky
+				if (!this.value) {
+					Array.from(allRows).forEach(row => {
+						row.style.display='';
+					});
+					return;
+				}
+
+				const searchDate=new Date(this.value);
+
+				Array.from(allRows).forEach(row => {
+					const dateElement=row.querySelector('[id^="single-row-date-"]');
+					if (dateElement) {
+						const rowDateText=dateElement.textContent.trim();
+						const rowDate=parseRowDate(rowDateText);
+
+						if (isSameDate(searchDate, rowDate)) {
+							row.style.display='';
+						} else {
+							row.style.display='none';
+						}
+					}
+				});
+			});
+
+			// Volitelně: Přidat tlačítko pro vymazání filtru
+			const clearButton=document.createElement('button');
+			clearButton.textContent='Zobrazit vše';
+			clearButton.className='btn btn-primary ml-2';
+			clearButton.onclick=function () {
+				searchDateInput.value='';
+				const event=new Event('change');
+				searchDateInput.dispatchEvent(event);
+			};
+			searchDateInput.insertAdjacentElement('afterend', clearButton);
+		});
+
+		function parseRowDate(dateText) {
+			const [day, month, year]=dateText.split('.').map(num => parseInt(num, 10));
+			return new Date(year, month-1, day);
+		}
+
+		function isSameDate(date1, date2) {
+			if (!date1||!date2) return false;
+			return date1.getFullYear()===date2.getFullYear()&&
+				date1.getMonth()===date2.getMonth()&&
+				date1.getDate()===date2.getDate();
+		}
+	</script>
+}

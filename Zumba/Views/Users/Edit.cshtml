@@ -1,0 +1,105 @@
+﻿@model AppUser
+@{
+	ViewData["Title"] = "Změna hesla";
+}
+
+@if(Model.MustChangePassword){
+
+<h1 class="text-center text-white">Je vyžadována změna hesla !!!</h1>
+}
+else
+{
+	
+<h1 class="text-center text-white">Změna hesla</h1>
+}
+<asp:RegularExpressionValidator ID="PasswordValidator" runat="server"
+								ControlToValidate="PasswordTextBox"
+								ErrorMessage="Heslo musí obsahovat alespoň jedno číslo a jedno písmeno."
+								ValidationExpression="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"
+								Display="Dynamic" />
+<div class="container ">
+	<div class="row  justify-content-center align-items-center">
+		<div asp-validation-summary="All" class="custom-validation-summary" style="width: 20rem;">
+			<!-- Validation messages will be displayed here -->
+		</div>
+	</div>
+</div>
+<div class="d-flex justify-content-center text-white">
+	<form id="myForm" method="post" asp-action="Edit" style="width:20rem">
+		<div class="form-group visually-hidden">
+			<label asp-for="Id"></label>
+			<input asp-for="Id" class="form-control" />
+		</div>
+		<input asp-for="State" class="form-control" hidden />
+		<input asp-for="Credit" class="form-control" hidden />
+		<div class="form-group">
+			<label asp-for="FirstName">Jméno</label>
+			<input asp-for="FirstName" class="form-control" readonly/>
+		</div>    <div class="form-group">
+			<label asp-for="LastName">Příjmení</label>
+			<input asp-for="LastName" class="form-control" readonly />
+			<div class="form-group">
+				<label asp-for="Email">Email</label>
+				<input asp-for="Email" class="form-control" readonly />
+			</div>
+			<div class="form-group">
+				<label asp-for="PhoneNumber">Telefon</label>
+				<input asp-for="PhoneNumber" class="form-control" readonly />
+			</div>
+			<div class="form-group">
+				<label for="password">Zadejte nové heslo</label>
+				<input id="password" type="password" name="password" class="form-control"  required />
+				<button id="toggleButton">Zobraz heslo</button>
+				<h6>Heslo musí mít min. 8 znaků a musí obsahovat velké, malé písmeno, číslici a znak.</h6>
+			</div>
+			<button type="submit" class="btn btn-primary mt-2"  >Uložit</button>
+	</form>
+
+</div>
+<!-- Modal processing-->
+<div class="modal fade text-black" id="messageModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="ModalLabel">Zpracovávám požadavek...</h1>
+				@* <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> *@
+			</div>
+			<div class="modal-body">
+
+				<div class="text-center">
+					<div class="spinner-border text-warning" role="status">
+						<span class="visually-hidden">Loading...</span>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<span>Ukládám ...</span>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	document.getElementById('toggleButton').addEventListener('click', function () {
+		const passwordInput = document.getElementById('password');
+		const button = document.getElementById('toggleButton');
+		event.preventDefault(); // Zamezí odeslání formuláře
+		// Přepnutí typu input a změna textu tlačítka
+		if (passwordInput.type === 'password') {
+			passwordInput.type = 'text';
+			button.textContent = 'Skrýj heslo';
+		} else {
+			passwordInput.type = 'password';
+			button.textContent = 'Zobraz heslo';
+		}
+	});
+	// Funkce pro validaci formuláře a zobrazení spinneru
+	document.getElementById('myForm').addEventListener('submit', function (event) {
+		var form = event.target;
+		if (form.checkValidity()) {
+			$('#messageModal').modal('show');
+		}
+	});
+
+
+ 
+</script>

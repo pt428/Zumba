@@ -1,0 +1,51 @@
+﻿@using Zumba.DTO
+ @model IEnumerable<HistoryDTO>
+
+<div class="container text-white">
+	<h1 class="text-center">Historie plateb</h1>
+	<div asp-validation-summary="All" class="custom-validation-summary"></div>
+	@* 	<form method="post" asp-action="DeleteAllHistory" class="d-flex justify-content-center m-2">
+
+	<button type="submit" class="btn btn-danger">SMAZAT HISTORII</button>
+
+	</form> *@
+@* 	<div class="d-flex justify-content-center m-2">
+
+		<a class="text-white m-2" asp-route-parameter="x" asp-controller="History" asp-action="Index">Řadit od nejstarší rezervace</a>
+		<a class="text-white m-2" asp-controller="History" asp-action="Index">Řadit od nejnovější rezervace</a>
+	</div> *@
+	<div class="row justify-content-center">
+		@foreach (var item in Model)
+		{
+
+
+			<div class=" p-0 m-1 d-flex justify-content-center ">
+				<div class="col   p-0 ">
+					<!-- Example single danger button -->
+					<div class="btn-group   d-flex justify-content-center ">
+						<button type="button" class="btn btn-secondary dropdown-toggle " style="max-width:30rem" data-bs-toggle="dropdown" aria-expanded="false">
+							<h5 class="p-2 m-0" s >@item.Description</h5>
+						</button>
+						<ul class="dropdown-menu" style="max-width:35rem">
+							<li class="list-group-item">Vytvořeno: @item.DateOfCreation</li>
+							<li class="list-group-item">Částka: @item.Amount</li>
+							<li class="list-group-item">Kredit před: @item.CreditBefore Kč</li>
+							<li class="list-group-item">Kredit po: @item.CreditAfter Kč</li>
+							@if (User.Identity is not null && User.Identity.IsAuthenticated && (User.IsInRole("Admin")))
+							{
+								<li class="list-group-item">Uživatel: @item?.AppUser?.FirstName @item?.AppUser?.LastName</li>
+								<li class="list-group-item">Email: @item?.AppUser?.Email</li>
+							}
+						</ul>
+					</div>
+				</div>
+			@* 	<div class="col-md-11 text-start btn btn-secondary p-0 rowDay">
+					<h5 class="p-2 m-0">@item.Description</h5>
+				</div> *@
+
+			</div>
+
+
+		}
+	</div>
+</div>

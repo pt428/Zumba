@@ -1,0 +1,7 @@
+﻿ 
+<h1 class="text-white text-center">QR kód pro platbu</h1>
+<div class="text-center">
+<h6 class ="text-white text-center">Po připsání peněz na účet bude kredit navýšen o @ViewBag.Amount Kč</h6>
+	<img class="img-thumbnail m-1" src="data:image/png;base64,@Convert.ToBase64String(ViewBag.QrCode)" alt="QR Code" style="max-width:15rem"/>
+	 
+</div>

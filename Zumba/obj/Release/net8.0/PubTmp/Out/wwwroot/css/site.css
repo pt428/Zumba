@@ -1,0 +1,96 @@
+h1 {
+    margin-top: 1rem;
+}
+
+.custom-validation-summary {
+    font-size: 15px; /* Adjust the size as needed */
+    font-weight: bold; /* Optional: make the text bold */
+    color: yellow; /* Optional: change the text color */
+    /*background-color: yellow;*/
+}
+.allowButton {
+    color: #00ff08;
+    transition: font-weight 0.1s linear;
+    text-shadow: 0px 0px 15px rgba(255, 255, 255, 0.5);
+}
+.allowButton:hover {
+    color: #00ff08;
+    font-weight:bold;
+}
+.cancelButton {
+    color: #ff00a6;
+    transition: font-weight 0.1s linear;
+    text-shadow: 5px 5px 15px rgba(255, 255, 255, 0.5);
+}
+    .cancelButton:hover {
+        font-weight: bold;
+        color: #ff00a6;
+        transform
+    }
+ 
+.btn-outline-success:hover {
+    color: #000;
+    border-color: #6255ff;
+    cursor: pointer;
+    background-color: white;
+}
+
+.btn-warning {
+    color: #000;
+    background: linear-gradient(to top, #dcd9ff, #7e73ff);
+    border-color: #6255ff;
+}
+
+    .btn-warning:hover {
+        color: #fff;
+        background: linear-gradient(to top, #6255ff, #4232ff);
+        border-color: #6255ff;
+    }
+
+    .btn-warning.rowDay:hover {
+        color: #000;
+        background: linear-gradient(to top, #dcd9ff, #7e73ff);
+        border-color: #6255ff;
+        cursor: default;
+    }
+
+.btn-success {
+    color: #000;
+    background-color: #8dff74;
+    border-color: #ffc107;
+}
+
+.btn-danger {
+    color: #000;
+    background-color: #ffd4d4;
+    border-color: #ffc107;
+}
+
+.btn-info {
+    color: #000;
+    background-color: #0597F2;
+    border-color: #ffc107;
+}
+
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+}

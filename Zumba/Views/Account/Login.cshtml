@@ -1,0 +1,96 @@
+﻿@using Zumba.ViewModels
+@model LoginVM
+@{
+	ViewData["Title"] = "Login";
+}
+<h1 class="text-white text-center">Přihlašovací stránka</h1>
+
+<div class="container  d-flex flex-column justify-content-center align-items-center">
+	<div class="  ">
+		<div asp-validation-summary="All" class="custom-validation-summary" style="max-width: 20rem;"></div>
+	</div>
+	@if (TempData["SuccessMessage"] != null)
+	{
+	<!-- Zobrazení úspěšné nebo chybové zprávy -->
+		<div class="   alert alert-success" style="max-width:20rem;">
+			@TempData["SuccessMessage"]
+		</div>
+	}
+</div>
+
+<div class="d-flex justify-content-center">
+
+	<form asp-action="Login" id="myForm" method="post" class="  text-white" style="width:20rem">
+		<input type="hidden" asp-for="ReturnUrl" />
+		<div class="form-group  mt-1">
+			<label asp-for="Email"></label>
+			<input type="email" id="email" asp-for="Email" class="form-control" required/>
+			@* <span   asp-validation-for="Email" class="text-danger bg-warning"></span> *@
+		</div>
+		<div class="form-group  mt-1">
+			<label asp-for="Password"></label>
+			<input id="password" type="password" asp-for="Password" class="form-control" required />
+			@* <span  asp-validation-for="Password" class="text-danger bg-warning"></span> *@
+			<button id="toggleButton">Zobraz heslo</button>
+		</div>
+		<div class="form-group  text-white ">
+			Pamatuj si mě <input type="checkbox" asp-for="Remember" />
+		</div>
+		<div class="d-flex gap-2">
+			<button id="submitButton" class="btn btn-primary mt-1" asp-action="Login" asp-controller="Account" >Přihlásit</button>
+			<a class="btn btn-info mt-1" asp-action="Create" asp-controller="Users">Zaregistrovat nový účet</a>
+		</div>
+ 
+	</form>
+</div>
+<!-- Modal processing-->
+<div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="ModalLabel">Přihlašuji Váš účet ...</h1>
+				@* <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> data-bs-toggle="modal" data-bs-target="#messageModal"*@
+			</div>
+			<div class="modal-body">
+
+				<div class="text-center">
+					<div class="spinner-border text-warning" role="status">
+						<span class="visually-hidden">Loading...</span>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<span>Kontrola hesla ...</span>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	document.getElementById('toggleButton').addEventListener('click', function () {
+		const passwordInput = document.getElementById('password');
+		const button = document.getElementById('toggleButton');
+		event.preventDefault(); // Zamezí odeslání formuláře
+		// Přepnutí typu input a změna textu tlačítka
+		if (passwordInput.type === 'password') {
+			passwordInput.type = 'text';
+			button.textContent = 'Skrýj heslo';
+		} else {
+			passwordInput.type = 'password';
+			button.textContent = 'Zobraz heslo';
+		}
+	});
+	
+		// Funkce pro validaci formuláře a zobrazení spinneru
+		document.getElementById('myForm').addEventListener('submit', function (event) {
+			var form = event.target;
+			if (form.checkValidity()) {				 
+				$('#messageModal').modal('show');			 
+			}  
+		});
+	 
+ 
+</script>
+@* @section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+} *@
+ 

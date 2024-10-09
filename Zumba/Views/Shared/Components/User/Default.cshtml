@@ -1,0 +1,9 @@
+﻿@using Zumba.Models;
+@model AppUser
+
+@if (User.Identity is not null && User.Identity.IsAuthenticated)
+{
+    <span class="navbar-text text-dark">Hello, @Model.UserName</span>
+    <span class="navbar-text text-dark">Email: @Model.Email</span>
+    <span class="navbar-text text-dark">Email: @Model.Credit</span>
+}

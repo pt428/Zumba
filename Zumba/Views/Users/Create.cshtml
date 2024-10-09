@@ -1,0 +1,78 @@
+﻿@using Zumba.ViewModels
+@model UserVM
+@{
+	ViewData["Title"] = "REGISTRACE";
+}
+	<h1 class="text-white text-center">REGISTRACE</h1>
+<div class="container ">
+	<div class="row  justify-content-center align-items-center">
+		<div asp-validation-summary="All" class="custom-validation-summary" style="width: 20rem;">
+			<!-- Validation messages will be displayed here -->
+		</div>
+	</div>
+</div>
+
+
+<div class="d-flex justify-content-center">
+	<form id="myForm" method="post" class="text-white" style="width:20rem">
+		<div class="form-group mt-1">
+			<label asp-for="FirstName">Jméno</label>
+			<input asp-for="FirstName" class="form-control" required />
+			<span asp-validation-for="FirstName" class="text-danger bg-warning"></span>
+		</div>
+		<div class="form-group mt-1" >
+			<label asp-for="LastName">Příjmení</label>
+			<input asp-for="LastName" class="form-control" required />
+			<span asp-validation-for="LastName" class="text-danger bg-warning"></span>
+		</div>
+		<div class="form-group mt-1">
+			<label asp-for="Email">Email</label>
+			<input type="email" asp-for="Email" class="form-control" required />
+			<span asp-validation-for="Email" class="text-danger bg-warning"></span>
+		</div>
+		<div class="form-group mt-1">
+			<label asp-for="PhoneNumber">Telefon</label>
+			<input type"tel" type="tel" asp-for="PhoneNumber" class="form-control" required />
+			<span asp-validation-for="PhoneNumber" class="text-danger bg-warning"></span>
+		</div>
+
+		<button type="submit" class="btn btn-primary mt-1"  >Registrovat</button>
+	</form>
+</div>
+@* @section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+} *@
+
+<!-- Modal processing-->
+<div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="ModalLabel">Provádím registraci ...</h1>
+				@* <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> *@
+			</div>
+			<div class="modal-body">
+
+				<div class="text-center">
+					<div class="spinner-border text-warning" role="status">
+						<span class="visually-hidden">Loading...</span>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<span>Odesílám email s potvrzením ...</span>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+		// Funkce pro validaci formuláře a zobrazení spinneru
+		document.getElementById('myForm').addEventListener('submit', function (event) {
+			var form = event.target;
+			if (form.checkValidity()) {
+				$('#messageModal').modal('show');
+			}
+		});
+
+
+</script>
