@@ -1,0 +1,78 @@
+﻿@using Zumba.ViewModels
+ @model MassEmailVM
+<h1 class="text-white text-center">Hromadný email</h1>
+<div asp-validation-summary="All" class="custom-validation-summary"></div>
+<form asp-action="SendEmail">
+
+	<div class="form-floating mb-3">
+		<textarea asp-for="@Model.EmailSubject" class="form-control" id="emailSubject" placeholder="Předmět emailu"></textarea>
+		<label for="emailSubject">Předmět emailu</label>
+	</div>
+	<div class="form-floating mb-3">
+		<textarea asp-for="@Model.EmailBody" class="form-control" id="emailBody" placeholder="Tělo emailu" style="height:20rem"></textarea>
+		<label for="emailBody">Tělo emailu</label>
+	</div>
+	<button id="sendEmail" type="submit" class="btn btn-success w-100 mb-3" disabled>Odeslat</button>
+	<div class=" bg-light p-2">
+
+		<div class="row bg-success bg-opacity-25 fw-bold">
+			<div class="col-1">#</div>
+			<div class="col-2">Jméno</div>
+
+			<div class="col-6">Email</div>
+			<div class="col-2">Role</div>
+			<div class="col-1">Poslat?</div>
+		</div>
+		@{
+			var bgColor = "bg-secondary";
+		}
+		@for (int i = 0; i<Model.Recipients.Count; i++)
+		{
+			@if (i%2==0)
+			{
+				bgColor="";
+			}
+			else
+			{
+				bgColor="bg-secondary";
+			}
+			<input asp-for="@Model.Recipients[i].FirstName" hidden />
+			<input asp-for="@Model.Recipients[i].LastName" hidden />
+			<input asp-for="@Model.Recipients[i].Email" hidden />
+			<input asp-for="@Model.Recipients[i].Role" hidden />
+
+			<hr class="m-0" />
+			<div class="row @($"{bgColor} bg-opacity-25")">
+				<div class="col-1">@(@i+1)</div>
+				<div class="col-2">@Model.Recipients[i].FirstName @Model.Recipients[i].LastName</div>
+				<div class="col-6">@Model.Recipients[i].Email</div>
+				<div class="col-2">@Model.Recipients[i].Role</div>
+				<div class="col-1  ">
+					<input class="form-check-input" asp-for="@Model.Recipients[i].AllowSendEmail" type="checkbox" onchange="countCheckedCheckboxes()" id="checkBoxAllowSendEmail-@i">
+				</div>
+			</div>
+		}
+	</div>
+</form>
+@section Scripts {
+	<script>
+		function countCheckedCheckboxes() {
+			const checkboxes=document.querySelectorAll('input[type="checkbox"]:checked');
+			console.log("Počet zaškrtnutých checkboxů: "+checkboxes.length);
+			const sendBtn=document.getElementById("sendEmail");
+			if (checkboxes.length<1) {
+				sendBtn.textContent="Nelze odeslat "+checkboxes.length+" emailů";
+				sendBtn.disabled=true;
+			} else {
+				sendBtn.textContent="Odeslat "+checkboxes.length+" emailů";
+				sendBtn.disabled=false;
+			}
+			return checkboxes.length;
+		}
+		document.addEventListener("DOMContentLoaded", function () {
+			const checkedCount=countCheckedCheckboxes();
+
+			console.log("Počet zaškrtnutých checkboxů: "+checkedCount);
+		});
+	</script>
+}

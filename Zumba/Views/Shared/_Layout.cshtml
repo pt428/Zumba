@@ -75,12 +75,25 @@
 						</li>
 						@if (User.Identity.IsAuthenticated&&(User.IsInRole("Admin")))
 						{
-							<li class="nav-item">
-								<a class="nav-link text-dark" asp-area="" asp-controller="Settings" asp-action="Index">ADMIN Nastavení</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Index">ADMIN Seznam rolí</a>
-							</li>
+							<div class="dropdown">
+								<button class="btn btn-danger dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+									ADMIN
+								</button>
+								<ul class="dropdown-menu">
+									<li class="dropdown-item">
+										<a class="nav-link text-dark" asp-area="" asp-controller="Settings" asp-action="Index">Nastavení</a>
+									</li>
+									<li class="dropdown-item">
+										<a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Index">Seznam rolí</a>
+									</li>									
+									<li class="dropdown-item">
+										<a class="nav-link text-dark" asp-area="" asp-controller="MassEmail" asp-action="Index">Hromadný email</a>
+									</li>
+								</ul>
+							</div>
+
+
+
 						}
 					}
 				</ul>
@@ -97,7 +110,7 @@
 							<ul class="dropdown-menu">
 								<li><a asp-controller="Credit" asp-action="Index" class="dropdown-item">Dobít kredit</a></li>
 								<li><a asp-controller="History" asp-action="Index" class="dropdown-item">Historie</a></li>
-							 
+
 							</ul>
 						</div>
 						@* <a asp-controller="Credit" asp-action="Index" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">@credit</a> *@

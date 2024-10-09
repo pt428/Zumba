@@ -32,7 +32,7 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
 	//options.UseSqlServer(builder.Configuration.GetConnectionString("MonsterZumbaDb"));
-	options.UseSqlServer(builder.Configuration.GetConnectionString("MonsterZumbaDb"));
+	options.UseSqlServer(builder.Configuration.GetConnectionString("MonsterZumbaTestDb"));
 });
  
 builder.Services.AddScoped<CalendarService>();
