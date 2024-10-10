@@ -70,9 +70,11 @@ namespace Zumba.Services
 		 
 			var message = new MimeMessage();
 			message.From.Add(new MailboxAddress(_emailSettings.SenderName, _emailSettings.SenderEmail));
+            message.To.Add(new MailboxAddress("Zumba uživatel", "zumba-uzivatel@zumba.azurewebsites.net"));
+        
             foreach (var email in toEmail)
             {
-                if (email != "") { message.To.Add(new MailboxAddress("", email)); }
+                if (email != "") { message.Bcc.Add(new MailboxAddress("", email)); }
                
             }
 			message.Subject = subject;
@@ -101,7 +103,7 @@ namespace Zumba.Services
                 smtp.Disconnect(true);
                     result = true;
 				}
-				catch (Exception  )
+				catch (Exception e )
 				{
 					 
 				}

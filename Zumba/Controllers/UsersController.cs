@@ -24,6 +24,7 @@ namespace Zumba.Controllers
 		private SignInManager<AppUser> _singInManager;
 		private ApplicationDbContext _dbContext;
 		private IPasswordValidator<AppUser> _passwordValidator;
+
 		public UsersController(
 			UserManager<AppUser> userManager,
 			IPasswordHasher<AppUser> passwordHasher,

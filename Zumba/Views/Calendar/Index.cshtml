@@ -18,7 +18,7 @@
 	<h1 class="text-white text-center">REZERVACE</h1>
 	@if (info!="")
 	{
-		<h5 class="text-danger text-center  bg-warning py-2">@info</h5>
+		<h5 class="text-danger text-center fw-bold bg-warning py-2 rounded rounded-3">@info</h5>
 	}
 	<!-- Zobrazení úspěšné nebo chybové zprávy -->
 	@if (TempData["SuccessMessage"]!=null)
@@ -35,9 +35,9 @@
 	}
 	<div asp-validation-summary="All" class="custom-validation-summary"></div>
 	<div class="d-flex justify-content-center">
-		<a class="btn btn-secondary m-1 flex-grow-1" asp-action="MoveBackwardWeek" asp-route-date="@DateTime.Parse(Model.ElementAt(0).DateOfDay)">O týden dozadu</a>
-		<a class="btn btn-secondary m-1 flex-grow-1 " asp-action="Index">Tento týden</a>
-		<a class="btn btn-secondary m-1 flex-grow-1  " asp-action="MoveForwardWeek" asp-route-date="@DateTime.Parse(Model.ElementAt(6).DateOfDay)">O týden dopředu</a>
+		<a class="btn btn-secondary m-1 flex-grow-1" onclick="showSpinner()" asp-action="MoveBackwardWeek" asp-route-date="@DateTime.Parse(Model.ElementAt(0).DateOfDay)">O týden dozadu</a>
+		<a class="btn btn-secondary m-1 flex-grow-1 " onclick="showSpinner()" asp-action="Index">Tento týden</a>
+		<a class="btn btn-secondary m-1 flex-grow-1  " onclick="showSpinner()" asp-action="MoveForwardWeek" asp-route-date="@DateTime.Parse(Model.ElementAt(6).DateOfDay)">O týden dopředu</a>
 	</div>
 	@if (User?.Identity?.IsAuthenticated??false)
 	{
@@ -82,7 +82,7 @@
 							</button>
 						</form>
 					</div>
-					<div class=" col-xxl-3   col-xl-12 p-0">
+					<div class=" col-xxl-3   col-xl-12 p-0"  >
 				
 						@if (Model.ElementAt(i).LessonIsOff)
 						{
@@ -136,7 +136,7 @@
 							}
 							else
 							{
-								<button class="btn cancelButton w-100 " data-bs-toggle="modal" data-bs-target="#Modal-cancel-lesson-@i">
+								<button class="btn cancelButton w-100  " data-bs-toggle="modal" data-bs-target="#Modal-cancel-lesson-@i">
 									<div class="d-flex align-items-center  justify-content-center fs-3"><i class="   bi bi-x-circle me-2  fs-1"></i><span class="fs-5">Zrušit lekci</span></div>
 								</button>
 							}
@@ -186,7 +186,7 @@
 				</div>
 			</div>
 
-			<!-- Modal CANCELED-->
+			<!-- Modal CANCELED LESSON-->
 			<div class="modal fade" id='Modal-cancel-lesson-@i' tabindex="-1" aria-labelledby="Modal-Label-@i" aria-hidden="true">
 				<div class="modal-dialog">
 					<div class="modal-content">
@@ -203,11 +203,13 @@
 								<input asp-for="@Model.ElementAt(i).DateOfDay" hidden />
 								@if (Model.ElementAt(i).LessonIsOff)
 								{
-									<button class="btn btn-success w-100 " asp-action="ChangeLessonStatusToOn" asp-controller="Calendar" type="submit"><div class="d-flex align-items-center justify-content-center"><i class="bi bi-check-circle me-2 fs-4"></i>Obnovit lekci</div></button>
+									<button class="btn btn-success w-100 " data-bs-toggle="modal" data-bs-target="#messageModalCanceling" asp-action="ChangeLessonStatusToOn" asp-controller="Calendar" type="submit">
+										<div class="d-flex align-items-center justify-content-center"><i class="bi bi-check-circle me-2 fs-4"></i>Obnovit lekci</div>
+										</button>
 								}
 								else
 								{
-									<button class="btn btn-danger w-100 " asp-action="ChangeLessonStatusToOff" asp-controller="Calendar" type="submit">
+									<button class="btn btn-danger w-100 " data-bs-toggle="modal" data-bs-target="#messageModalCanceling" asp-action="ChangeLessonStatusToOff" asp-controller="Calendar" type="submit">
 										<div class="d-flex align-items-center  justify-content-center"><i class="bi bi-x-circle me-2  fs-4"></i>Zrušit lekci</div>
 									</button>
 								}
@@ -220,8 +222,28 @@
 	}
 </div>
 
-
-<!-- Modal -->
+<!-- Modal  canceling/restoring lesson -->
+<div class="modal fade" id="messageModalCanceling" tabindex="-1" aria-labelledby="ModalLabelCanceling" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="ModalLabelCanceling">Zpracovávám požadavek ...</h1>
+				@* <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> *@
+			</div>
+			<div class="modal-body">
+				<div class="text-center">
+					<div class="spinner-border text-warning" role="status">
+						<span class="visually-hidden">Zpracovávám požadavek ...</span>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<span>Ukládám ...</span>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Modal  making reservation -->
 <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -242,24 +264,24 @@
 		</div>
 	</div>
 </div>
-<!-- Modal -->
+<!-- Modal-->
 <div class="modal fade" id="messageModalCal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h1 class="modal-title fs-5" id="ModalLabel">Načítám kalendář ...</h1>
-				@* <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> *@
+				<h1 class="modal-title fs-5" id="ModalLabel">Načítám ...</h1>			 
 			</div>
-			<div class="modal-body">
-				<div class="text-center">
-					<div class="spinner-border text-warning" role="status">
-						<span class="visually-hidden">Loading...</span>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<span>Vytvářím seznam rezervací ...</span>
-			</div>
+			<div class="modal-body d-flex justify-content-center">
+				<div class="spinner-border text-warning" role="status"></div>				 
+			</div>			 
 		</div>
 	</div>
 </div>
+@section Scripts{
+	<script>
+		 
+		function showSpinner() {
+			$('#messageModalCal').modal('show');
+		}
+	</script>
+}

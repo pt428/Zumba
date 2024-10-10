@@ -1,27 +1,53 @@
 ﻿@using Zumba.ViewModels
  @model MassEmailVM
+@{
+	ViewData["Title"]="Hromadný Email";
+	var info = ViewBag.Info;
+}
+@{
+	ViewBag.Title=" ";
+ 
+	var message = ViewBag.Message as string;
+}
 <h1 class="text-white text-center">Hromadný email</h1>
 <div asp-validation-summary="All" class="custom-validation-summary"></div>
-<form asp-action="SendEmail">
+
+<!-- Zobrazení úspěšné nebo chybové zprávy -->
+@if (TempData["SuccessMessage"]!=null)
+{
+	<div class="alert alert-success">
+		@TempData["SuccessMessage"]
+	</div>
+}
+@if (TempData["ErrorMessage"]!=null)
+{
+	<div class="alert alert-danger">
+		@TempData["ErrorMessage"]
+	</div>
+}
+<form asp-action="Index">
 
 	<div class="form-floating mb-3">
-		<textarea asp-for="@Model.EmailSubject" class="form-control" id="emailSubject" placeholder="Předmět emailu"></textarea>
+		<textarea asp-for="@Model.EmailSubject" class="form-control" id="emailSubject" placeholder="Předmět emailu" onkeyup="checkEmptyTextAreas()" required></textarea>
 		<label for="emailSubject">Předmět emailu</label>
+		<span id="emailSubjectEmptyWarning" class="text-danger bg-warning visually-hidden rounded rounded-2 m-1 p-1">Vyplňte pole !</span>
 	</div>
 	<div class="form-floating mb-3">
-		<textarea asp-for="@Model.EmailBody" class="form-control" id="emailBody" placeholder="Tělo emailu" style="height:20rem"></textarea>
+		<textarea asp-for="@Model.EmailBody" class="form-control" id="emailBody" placeholder="Tělo emailu" style="height:15rem" onkeyup="checkEmptyTextAreas()" required></textarea>
 		<label for="emailBody">Tělo emailu</label>
+		<span id="emailBodyEmptyWarning" class="text-danger bg-warning visually-hidden rounded rounded-2 m-1 p-1">Vyplňte pole !</span>
 	</div>
 	<button id="sendEmail" type="submit" class="btn btn-success w-100 mb-3" disabled>Odeslat</button>
+	 
 	<div class=" bg-light p-2">
 
 		<div class="row bg-success bg-opacity-25 fw-bold">
-			<div class="col-1">#</div>
-			<div class="col-2">Jméno</div>
-
-			<div class="col-6">Email</div>
-			<div class="col-2">Role</div>
-			<div class="col-1">Poslat?</div>
+			<div class="col-sm-1 col-xl-1 ">Poslat</div>
+			<div class="col-sm-1 col-xl-1">#</div>
+			<div class="col-sm-5 col-xl-2">Jméno</div>
+			<div class="col-sm-5 col-xl-6">Email</div>
+			<div class="col-sm-7 d-xs-none d-xl-none"></div>
+			<div class="col-sm-5 col-xl-2">Role</div>
 		</div>
 		@{
 			var bgColor = "bg-secondary";
@@ -43,23 +69,67 @@
 
 			<hr class="m-0" />
 			<div class="row @($"{bgColor} bg-opacity-25")">
-				<div class="col-1">@(@i+1)</div>
-				<div class="col-2">@Model.Recipients[i].FirstName @Model.Recipients[i].LastName</div>
-				<div class="col-6">@Model.Recipients[i].Email</div>
-				<div class="col-2">@Model.Recipients[i].Role</div>
-				<div class="col-1  ">
-					<input class="form-check-input" asp-for="@Model.Recipients[i].AllowSendEmail" type="checkbox" onchange="countCheckedCheckboxes()" id="checkBoxAllowSendEmail-@i">
+				<div class="col-sm-1 col-xl-1  ">
+					<input class="form-check-input fs-3 mb-1 bg-success" asp-for="@Model.Recipients[i].AllowSendEmail" type="checkbox" onchange="countCheckedCheckboxes()" id="checkBoxAllowSendEmail-@i">
 				</div>
+				<div class="col-sm-1 col-xl-1">@(@i+1)</div>
+				<div class="col-sm-5 col-xl-2">@Model.Recipients[i].FirstName @Model.Recipients[i].LastName</div>
+				<div class="col-sm-5 col-xl-6">@Model.Recipients[i].Email</div>
+				<div class="col-sm-7 d-xl-none"></div>
+				<div class="col-sm-5 col-xl-2  ">@Model.Recipients[i].Role</div>
 			</div>
 		}
 	</div>
+<!-- Modal Sending-->
+<div class="modal fade" id='Modal-email-result' tabindex="-1" aria-labelledby="Modal-email" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="Modal-email">Hromadný email</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				Odeslat emaily?
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">NE</button>
+				 
+							<button type="submit" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#messageModal">ANO</button>
+			 
+			</div>
+		</div>
+	</div>
+</div>
 </form>
+			 
+<!-- Modal processing-->
+<div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="ModalLabel">Zpracovávám požadavek ...</h1>
+				@* <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> *@
+			</div>
+			<div class="modal-body">
+
+				<div class="text-center">
+					<div class="spinner-border text-warning" role="status">
+						<span class="visually-hidden">Loading...</span>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<span>Odesílám emaily ...</span>
+			</div>
+		</div>
+	</div>
+</div>
 @section Scripts {
 	<script>
+		// COUNT ALL CHECKED CHECKBOXES
 		function countCheckedCheckboxes() {
 			const checkboxes=document.querySelectorAll('input[type="checkbox"]:checked');
-			console.log("Počet zaškrtnutých checkboxů: "+checkboxes.length);
-			const sendBtn=document.getElementById("sendEmail");
+					const sendBtn=document.getElementById("sendEmail");
 			if (checkboxes.length<1) {
 				sendBtn.textContent="Nelze odeslat "+checkboxes.length+" emailů";
 				sendBtn.disabled=true;
@@ -69,10 +139,39 @@
 			}
 			return checkboxes.length;
 		}
+		// AFTER LOAD COUNT CHECKBOXES
 		document.addEventListener("DOMContentLoaded", function () {
 			const checkedCount=countCheckedCheckboxes();
-
-			console.log("Počet zaškrtnutých checkboxů: "+checkedCount);
 		});
+		// CHECK NO EMPTY TEXTAREAS
+		const sendEmailBtn=document.getElementById("sendEmail");
+		sendEmailBtn.addEventListener("click", function (e) {
+			e.preventDefault();
+			if (checkEmptyTextAreas()) {
+				$('#Modal-email-result').modal('show');
+			}
+		});
+		function checkEmptyTextAreas() {
+			const emailSubjectEmptyWarning=document.getElementById("emailSubjectEmptyWarning");
+			const emailSubject=document.getElementById("emailSubject");
+			const emailBodyEmptyWarning=document.getElementById("emailBodyEmptyWarning");
+			const emailBody=document.getElementById("emailBody");
+			if (emailSubject.value=="") {
+				emailSubjectEmptyWarning.classList.replace("visually-hidden", "visually-visible");
+				 
+			} else {
+				emailSubjectEmptyWarning.classList.replace("visually-visible","visually-hidden"  );
+			}
+			if (emailBody.value=="") {
+				emailBodyEmptyWarning.classList.replace("visually-hidden", "visually-visible");
+			} else {
+				emailBodyEmptyWarning.classList.replace("visually-visible", "visually-hidden");
+			}
+			if (emailSubject.value=="" || emailBody.value=="") {
+			return false;
+			 
+			}
+			return true;
+		}
 	</script>
 }
