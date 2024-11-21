@@ -11,10 +11,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("b7a9c05b-10e1-4bde-aed5-1f0d64d6c77a")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("Zumba")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a350e4406810349f42bb35a8aeb997724b825d96")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ca57a3c70b1b6a28de1c936014848e538038262c")]
 [assembly: System.Reflection.AssemblyProductAttribute("Zumba")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Zumba")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

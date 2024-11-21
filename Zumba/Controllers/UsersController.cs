@@ -199,6 +199,8 @@ namespace Zumba.Controllers
 					message = "Dobrý den,<br/>Váš Zumba účet byl deaktivován.";
 					user.State = "Aktivovat";
 					user.IsActive = false;
+					user.MustChangePassword = true;
+					user.PasswordHash = _passwordHasher.HashPassword(user, "Abcd1234+");
 					TempData["SuccessMessage"] = $"Účet {user.Email} byl DEAKTIVOVÁN.";
 				}
 

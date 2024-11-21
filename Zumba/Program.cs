@@ -31,7 +31,7 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 });
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-	//options.UseSqlServer(builder.Configuration.GetConnectionString("MonsterZumbaDb"));
+	//options.UseSqlServer(builder.Configuration.GetConnectionString("MonsterZumbaTestDb"));
 	options.UseSqlServer(builder.Configuration.GetConnectionString("MonsterZumbaDb"));
 });
  

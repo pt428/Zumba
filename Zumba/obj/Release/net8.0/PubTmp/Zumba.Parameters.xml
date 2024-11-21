@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <parameters>
-  <parameter name="IIS Web Application Name" description="" value="site7337" tags="IisApp">
+  <parameter name="IIS Web Application Name" description="" value="zumba" tags="IisApp">
     <parameterEntry kind="ProviderPath" scope="IisApp" match="^C:\\Users\\pt75\\OneDrive\\1_VSB\ rekvalifikace\\2-C\#\\Moje\ projekty\\Zumba\\Zumba\\obj\\Release\\net8\.0\\PubTmp\\Out\\$" />
   </parameter>
 </parameters>
