@@ -27,11 +27,11 @@
 			<input type="email" id="email" asp-for="Email" class="form-control" required/>
 			@* <span   asp-validation-for="Email" class="text-danger bg-warning"></span> *@
 		</div>
-		<div class="form-group  mt-1">
+		<div class="form-group  mt-1  position-relative">
 			<label asp-for="Password"></label>
 			<input id="password" type="password" asp-for="Password" class="form-control" required />
 			@* <span  asp-validation-for="Password" class="text-danger bg-warning"></span> *@
-			<button id="toggleButton">Zobraz heslo</button>
+			<button id="toggleButton" class="position-absolute border-0 bg-transparent fs-5" style="top:1.8rem;right:0rem;"><i class="bi bi-eye"></i></button>
 		</div>
 		<div class="d-flex justify-content-between  text-white my-2">
 			<div class=" ">
@@ -78,10 +78,10 @@
 		// Přepnutí typu input a změna textu tlačítka
 		if (passwordInput.type === 'password') {
 			passwordInput.type = 'text';
-			button.textContent = 'Skrýj heslo';
+			button.innerHTML='<i class="bi bi-eye-slash"></i>';
 		} else {
 			passwordInput.type = 'password';
-			button.textContent = 'Zobraz heslo';
+			button.innerHTML='<i class="bi bi-eye"></i>';
 		}
 	});
 	

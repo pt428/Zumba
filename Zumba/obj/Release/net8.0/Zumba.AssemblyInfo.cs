@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Zumba")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ca57a3c70b1b6a28de1c936014848e538038262c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0ae2819ca2dddd2def53b303b4f0fc49bfb7ccfe")]
 [assembly: System.Reflection.AssemblyProductAttribute("Zumba")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Zumba")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

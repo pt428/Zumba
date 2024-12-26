@@ -24,7 +24,7 @@ namespace Zumba.Controllers
 		//************ LOGIN START ************************************
 		//*************************************************************************
 		[AllowAnonymous]
-		public IActionResult Login(string returnUrl)
+		public IActionResult Login(string returnUrl )
 		{
 			LoginVM loginVM = new LoginVM();
 			loginVM.ReturnUrl=returnUrl;

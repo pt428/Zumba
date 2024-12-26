@@ -3,12 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\pt75\\OneDrive\\1_VSB rekvalifikace\\2-C#\\Moje projekty\\Zumba\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{0CF0FFE9-D549-4241-BF49-B83B16CBCD33}|Zumba\\Zumba.csproj|c:\\users\\pt75\\onedrive\\1_vsb rekvalifikace\\2-c#\\moje projekty\\zumba\\zumba\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0CF0FFE9-D549-4241-BF49-B83B16CBCD33}|Zumba\\Zumba.csproj|solutionrelative:zumba\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0CF0FFE9-D549-4241-BF49-B83B16CBCD33}|Zumba\\Zumba.csproj|c:\\users\\pt75\\onedrive\\1_vsb rekvalifikace\\2-c#\\moje projekty\\zumba\\zumba\\services\\emailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0CF0FFE9-D549-4241-BF49-B83B16CBCD33}|Zumba\\Zumba.csproj|solutionrelative:zumba\\services\\emailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{0CF0FFE9-D549-4241-BF49-B83B16CBCD33}|Zumba\\Zumba.csproj|c:\\users\\pt75\\onedrive\\1_vsb rekvalifikace\\2-c#\\moje projekty\\zumba\\zumba\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{0CF0FFE9-D549-4241-BF49-B83B16CBCD33}|Zumba\\Zumba.csproj|solutionrelative:zumba\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -17,9 +13,13 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedWidth": 70,
-          "SelectedChildIndex": 4,
+          "DockedWidth": 303,
+          "SelectedChildIndex": 5,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
@@ -39,33 +39,20 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "AccountController.cs",
-              "DocumentMoniker": "C:\\Users\\pt75\\OneDrive\\1_VSB rekvalifikace\\2-C#\\Moje projekty\\Zumba\\Zumba\\Controllers\\AccountController.cs",
-              "RelativeDocumentMoniker": "Zumba\\Controllers\\AccountController.cs",
-              "ToolTip": "C:\\Users\\pt75\\OneDrive\\1_VSB rekvalifikace\\2-C#\\Moje projekty\\Zumba\\Zumba\\Controllers\\AccountController.cs",
-              "RelativeToolTip": "Zumba\\Controllers\\AccountController.cs",
-              "ViewState": "AQIAAFEAAAAAAAAAAAAAAGgAAABHAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-21T15:16:19.046Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "EmailService.cs",
-              "DocumentMoniker": "C:\\Users\\pt75\\OneDrive\\1_VSB rekvalifikace\\2-C#\\Moje projekty\\Zumba\\Zumba\\Services\\EmailService.cs",
-              "RelativeDocumentMoniker": "Zumba\\Services\\EmailService.cs",
-              "ToolTip": "C:\\Users\\pt75\\OneDrive\\1_VSB rekvalifikace\\2-C#\\Moje projekty\\Zumba\\Zumba\\Services\\EmailService.cs",
-              "RelativeToolTip": "Zumba\\Services\\EmailService.cs",
-              "ViewState": "AQIAADkAAAAAAAAAAAAAAEgAAABBAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-21T15:15:29.342Z",
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\pt75\\OneDrive\\1_VSB rekvalifikace\\2-C#\\Moje projekty\\Zumba\\Zumba\\appsettings.json",
+              "RelativeDocumentMoniker": "Zumba\\appsettings.json",
+              "ToolTip": "C:\\Users\\pt75\\OneDrive\\1_VSB rekvalifikace\\2-C#\\Moje projekty\\Zumba\\Zumba\\appsettings.json",
+              "RelativeToolTip": "Zumba\\appsettings.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAAgAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-12-26T17:30:32.378Z",
               "EditorCaption": ""
             }
           ]
         },
         {
-          "DockedWidth": 130,
+          "DockedWidth": 405,
           "SelectedChildIndex": -1,
           "Children": [
             {
